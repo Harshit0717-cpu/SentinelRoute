@@ -1,57 +1,52 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
+
+const API_BASE = "https://sentinelroute-backend.onrender.com";
 
 function App() {
-  const [events, setEvents] = useState([]);
+  const [backendStatus, setBackendStatus] = useState("");
+  const [detectionResult, setDetectionResult] = useState("");
 
-  const fetchEvents = async () => {
+  const checkBackend = async () => {
     try {
-      const response = await fetch("http://127.0.0.1:8000/events");
-      const data = await response.json();
-      setEvents(data.events.reverse());
-    } catch (error) {
-      console.error("Error fetching events:", error);
+      const res = await fetch(`${API_BASE}/api/test`);
+      const data = await res.json();
+      setBackendStatus(data.data);
+    } catch (err) {
+      setBackendStatus("Backend not reachable ❌");
     }
   };
 
-  useEffect(() => {
-    fetchEvents();
-    const interval = setInterval(fetchEvents, 2000);
-    return () => clearInterval(interval);
-  }, []);
+  const runDetection = async () => {
+    try {
+      const res = await fetch(`${API_BASE}/api/detect`);
+      const data = await res.json();
+      setDetectionResult(JSON.stringify(data, null, 2));
+    } catch (err) {
+      setDetectionResult("Detection failed ❌");
+    }
+  };
 
   return (
-    <div style={{ padding: "20px", fontFamily: "Arial" }}>
+    <div style={{ padding: "40px", fontFamily: "Arial" }}>
       <h1>🚨 SentinelRoute Dashboard</h1>
-      <h3>Live Intrusion Alerts</h3>
 
-      {events.length === 0 ? (
-        <p>No events detected.</p>
-      ) : (
-        events.map((event, index) => {
-          const highRisk = event.risk_score > 2;
+      <button onClick={checkBackend} style={{ marginRight: "10px" }}>
+        Test Backend Connection
+      </button>
 
-          return (
-            <div
-              key={index}
-              style={{
-                border: highRisk ? "2px solid red" : "1px solid #ff9999",
-                padding: "12px",
-                marginBottom: "12px",
-                borderRadius: "8px",
-                backgroundColor: highRisk ? "#ffcccc" : "#ffe6e6",
-                boxShadow: highRisk
-                  ? "0 0 10px rgba(255,0,0,0.6)"
-                  : "none",
-              }}
-            >
-              <strong>Track ID:</strong> {event.track_id} <br />
-              <strong>Risk Score:</strong> {event.risk_score} <br />
-              <strong>Confidence:</strong> {event.confidence} <br />
-              <strong>Time:</strong> {event.timestamp}
-            </div>
-          );
-        })
-      )}
+      <button onClick={runDetection}>
+        Run Intrusion Detection
+      </button>
+
+      <div style={{ marginTop: "20px" }}>
+        <h3>Backend Status:</h3>
+        <p>{backendStatus}</p>
+      </div>
+
+      <div style={{ marginTop: "20px" }}>
+        <h3>Detection Output:</h3>
+        <pre>{detectionResult}</pre>
+      </div>
     </div>
   );
 }
