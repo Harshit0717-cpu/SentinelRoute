@@ -29,8 +29,8 @@ Built for IIT Roorkee Hackathon 2026.
 
 ##  How To Run
 
-Backend:
-Frontend: https://sentinel-route-pi.vercel.app/
+Frontend: https://sentinel-route-pi.vercel.app
+
 Backend: https://sentinelroute-backend.onrender.com
 
 ---
