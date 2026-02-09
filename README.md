@@ -30,16 +30,8 @@ Built for IIT Roorkee Hackathon 2026.
 ##  How To Run
 
 Backend:
-cd backend
-python -m uvicorn main:app --reload
-
-Frontend:
-cd frontend
-npm install
-npm run dev
-
-Open:
-http://localhost:5173
+Frontend: https://sentinel-route-pi.vercel.app/
+Backend: https://sentinelroute-backend.onrender.com
 
 ---
 
